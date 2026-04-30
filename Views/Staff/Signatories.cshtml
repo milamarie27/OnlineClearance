@@ -1,0 +1,179 @@
+@model IEnumerable<OnlineClearance.Models.SignatoryViewModel>
+@{
+    ViewData["Title"]      = "Signatories";
+    ViewData["ActivePage"] = "Signatories";
+    Layout = "~/Views/Shared/_StaffLayout.cshtml";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+        <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h5 class="fw-bold mb-0" style="color:#1a1a2e;">Signatories</h5>
+    <span class="semester-badge"><i class="fas fa-calendar-alt me-2"></i>2nd Semester · A.Y. 2025-2026</span>
+</div>
+
+<div class="page-card">
+    <div class="page-card-hd dark">
+        <i class="fas fa-file-signature me-2"></i>STUDENT CLEARANCE REQUESTS
+    </div>
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width:80px;text-align:center;">NO.</th>
+                    <th>STUDENT</th>
+                    <th>COURSE</th>
+                    <th style="text-align:center;">STATUS</th>
+                    <th style="text-align:center;">ACTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    int i = 1;
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="text-align:center;">
+                                <span class="code-badge">@i.ToString("D2")</span>
+                            </td>
+                            <td>
+                                <div style="font-weight:600;font-size:13px;">@item.StudentName</div>
+                                <div style="font-size:11px;color:#888;">ID: @item.StudentId</div>
+                            </td>
+                            <td>
+                                <span class="code-badge">@item.Course</span>
+                            </td>
+                            <td style="text-align:center;">
+                                @if (item.Status == "Approved")
+                                {
+                                    <span class="status-approved">Approved</span>
+                                }
+                                else if (item.Status == "Declined")
+                                {
+                                    <span class="status-declined">Declined</span>
+                                }
+                                else
+                                {
+                                    <span class="status-pending">Pending</span>
+                                }
+                            </td>
+                            <td style="text-align:center;">
+                                @if (item.Status == "Approved")
+                                {
+                                    <span class="status-approved">Approved</span>
+                                }
+                                else if (item.Status == "Declined")
+                                {
+                                    <span class="status-declined">Declined</span>
+                                }
+                                else
+                                {
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <form asp-action="Approve" asp-controller="Staff" method="post" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="studentId" value="@item.StudentId" />
+                                            <button type="submit" class="btn-approve">
+                                                <i class="fas fa-check me-1"></i>Approve
+                                            </button>
+                                        </form>
+                                        <form asp-action="Decline" asp-controller="Staff" method="post" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="studentId" value="@item.StudentId" />
+                                            <button type="submit" class="btn-decline">
+                                                <i class="fas fa-times me-1"></i>Decline
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                }
+                else
+                {
+                    @foreach (var row in new[] {
+                        new { num=1, student="Juan Dela Cruz",  id="2023-001", course="IT101", status="Pending"  },
+                        new { num=2, student="Maria Santos",    id="2023-002", course="CS202", status="Approved" },
+                        new { num=3, student="Pedro Reyes",     id="2023-003", course="IT101", status="Declined" },
+                        new { num=4, student="Ana Gomez",       id="2023-004", course="CS202", status="Pending"  },
+                        new { num=5, student="Carlo Mendoza",   id="2023-005", course="IT101", status="Pending"  },
+                    })
+                    {
+                        <tr>
+                            <td style="text-align:center;">
+                                <span class="code-badge">@row.num.ToString("D2")</span>
+                            </td>
+                            <td>
+                                <div style="font-weight:600;font-size:13px;">@row.student</div>
+                                <div style="font-size:11px;color:#888;">ID: @row.id</div>
+                            </td>
+                            <td>
+                                <span class="code-badge">@row.course</span>
+                            </td>
+                            <td style="text-align:center;">
+                                @if (row.status == "Approved")
+                                {
+                                    <span class="status-approved">Approved</span>
+                                }
+                                else if (row.status == "Declined")
+                                {
+                                    <span class="status-declined">Declined</span>
+                                }
+                                else
+                                {
+                                    <span class="status-pending">Pending</span>
+                                }
+                            </td>
+                            <td style="text-align:center;">
+                                @if (row.status == "Approved")
+                                {
+                                    <span class="status-approved">Approved</span>
+                                }
+                                else if (row.status == "Declined")
+                                {
+                                    <span class="status-declined">Declined</span>
+                                }
+                                else
+                                {
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <button class="btn-approve" onclick="handleAction(this,'approved')">
+                                            <i class="fas fa-check me-1"></i>Approve
+                                        </button>
+                                        <button class="btn-decline" onclick="handleAction(this,'declined')">
+                                            <i class="fas fa-times me-1"></i>Decline
+                                        </button>
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function handleAction(btn, action) {
+        const actionCell   = btn.closest('td');
+        const statusCell   = actionCell.closest('tr').querySelectorAll('td')[3];
+
+        if (action === 'approved') {
+            actionCell.innerHTML = '<span class="status-approved">Approved</span>';
+            statusCell.innerHTML = '<span class="status-approved">Approved</span>';
+        } else {
+            actionCell.innerHTML = '<span class="status-declined">Declined</span>';
+            statusCell.innerHTML = '<span class="status-declined">Declined</span>';
+        }
+    }
+</script>
+}

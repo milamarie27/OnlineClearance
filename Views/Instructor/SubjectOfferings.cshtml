@@ -1,0 +1,66 @@
+@model IEnumerable<OnlineClearance.Models.SubjectOffering>
+@{
+    ViewData["Title"]      = "Assigned Subjects";
+    ViewData["ActivePage"] = "SubjectOfferings";
+    Layout = "~/Views/Shared/_InstructorLayout.cshtml";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h5 class="fw-bold mb-0" style="color:#1a1a2e;">Assigned Subjects</h5>
+    <span class="semester-badge"><i class="fas fa-calendar-alt me-2"></i>2nd Semester · A.Y. 2025-2026</span>
+</div>
+
+<div class="page-card">
+    <div class="page-card-hd dark">
+        <i class="fas fa-book-open me-2"></i>Assigned Subjects
+    </div>
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>MIS CODE</th>
+                    <th>SUBJECT CODE</th>
+                    <th>DESCRIPTION</th>
+                    <th style="text-align:center;">LAB UNIT</th>
+                    <th style="text-align:center;">LEC UNIT</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><span class="code-badge">@item.MisCode</span></td>
+                            <td style="font-weight:600;">@item.SubjectCode</td>
+                            <td>@item.Description</td>
+                            <td style="text-align:center;font-weight:700;">@item.LabUnit</td>
+                            <td style="text-align:center;font-weight:700;">@item.LecUnit</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    @foreach (var row in new[] {
+                        new { code="GT-58", subj="P Elec 3",  desc="Platform Technology",                        lab=3, lec=2 },
+                        new { code="GT-54", subj="AP 3",      desc="Integrative Programming and Technologies 1", lab=3, lec=2 },
+                        new { code="GT-55", subj="PC 223",    desc="ASP .NET",                                   lab=3, lec=2 },
+                        new { code="GT-56", subj="PC 223",    desc="Integrative Programming and Technologies 1", lab=3, lec=2 },
+                        new { code="GT-57", subj="P Elec 3",  desc="Integrative Programming and Technologies 1", lab=3, lec=2 },
+                        new { code="GT-58", subj="AP 3",      desc="Platform Technology",                        lab=3, lec=2 },
+                        new { code="GT-59", subj="AP 3",      desc="ASP .NET",                                   lab=3, lec=2 },
+                    })
+                    {
+                        <tr>
+                            <td><span class="code-badge">@row.code</span></td>
+                            <td style="font-weight:600;">@row.subj</td>
+                            <td>@row.desc</td>
+                            <td style="text-align:center;font-weight:700;">@row.lab</td>
+                            <td style="text-align:center;font-weight:700;">@row.lec</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

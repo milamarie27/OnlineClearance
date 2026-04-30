@@ -1,0 +1,121 @@
+@model IEnumerable<OnlineClearance.Models.ClearanceRequest>
+@{
+    ViewData["Title"]      = "Subject Clearance";
+    ViewData["ActivePage"] = "SubjectClearance";
+    Layout = "~/Views/Shared/_InstructorLayout.cshtml";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+        <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h5 class="fw-bold mb-0" style="color:#1a1a2e;">Subject Clearance</h5>
+    <span class="semester-badge"><i class="fas fa-calendar-alt me-2"></i>2nd Semester · A.Y. 2025-2026</span>
+</div>
+
+<div class="page-card">
+    <div class="page-card-hd dark">
+        <i class="fas fa-clipboard-check me-2"></i>Subject Clearance Requests
+    </div>
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>CODE</th>
+                    <th>SUBJECT</th>
+                    <th>DESCRIPTION</th>
+                    <th>REQUESTED BY</th>
+                    <th>ACTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><span class="code-badge">@item.MisCode</span></td>
+                            <td style="font-weight:600;">@item.SubjectCode</td>
+                            <td>@item.Description</td>
+                            <td>
+                                <div style="font-weight:600;font-size:13px;">@item.StudentName</div>
+                                <div style="font-size:11px;color:#888;">@item.StudentCourse</div>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <form asp-action="Approve" asp-controller="SubjectClearance" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit" class="btn-approve">
+                                            <i class="fas fa-check me-1"></i>Approve
+                                        </button>
+                                    </form>
+                                    <form asp-action="Decline" asp-controller="SubjectClearance" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit" class="btn-decline">
+                                            <i class="fas fa-times me-1"></i>Decline
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <!-- SAMPLE DATA -->
+                    @foreach (var row in new[] {
+                        new { code="GT-58", subj="P Elec 3",  desc="Platform Technology",                         student="Althea Jean Barnes",   course="BSIT-2A" },
+                        new { code="GT-54", subj="PC 223",    desc="Integrative Programming and Technologies 1",  student="Mila Marie Villamor",  course="BSIT-2A" },
+                        new { code="GT-55", subj="AP 3",      desc="ASP .NET",                                    student="Melanie Dinglasa",     course="BSIT-2A" },
+                        new { code="GT-54", subj="PC 223",    desc="Integrative Programming and Technologies 1",  student="Stephany Camoro",      course="BSIT-2A" },
+                        new { code="GT-54", subj="P Elec 3",  desc="Integrative Programming and Technologies 1",  student="Janice Angel Chua",    course="BSIT-2A" },
+                        new { code="GT-58", subj="AP 3",      desc="Platform Technology",                         student="Gabriel Tolomea",      course="BSIT-2A" },
+                        new { code="GT-59", subj="AP 3",      desc="ASP .NET",                                    student="Alex Belongilot",      course="BSIT-2A" },
+                        new { code="GT-60", subj="AP 3",      desc="ASP .NET",                                    student="Sheena Melgar",        course="BSIT-2A" },
+                    })
+                    {
+                        <tr>
+                            <td><span class="code-badge">@row.code</span></td>
+                            <td style="font-weight:600;">@row.subj</td>
+                            <td>@row.desc</td>
+                            <td>
+                                <div style="font-weight:600;font-size:13px;">@row.student</div>
+                                <div style="font-size:11px;color:#888;">@row.course</div>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <button class="btn-approve" onclick="handleAction(this,'approve')">
+                                        <i class="fas fa-check me-1"></i>Approve
+                                    </button>
+                                    <button class="btn-decline" onclick="handleAction(this,'decline')">
+                                        <i class="fas fa-times me-1"></i>Decline
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function handleAction(btn, action) {
+        const actionCell = btn.closest('td');
+        if (action === 'approve') {
+            actionCell.innerHTML = '<span class="status-approved">Approved</span>';
+        } else {
+            actionCell.innerHTML = '<span class="status-declined">Declined</span>';
+        }
+    }
+</script>
+}

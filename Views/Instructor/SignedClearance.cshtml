@@ -1,0 +1,163 @@
+@model IEnumerable<OnlineClearance.Models.SignedClearance>
+
+@{
+    ViewData["Title"] = "Signed Clearance";
+    ViewData["ActivePage"] = "SignedClearance";
+    Layout = "~/Views/Shared/_InstructorLayout.cshtml";
+    string currentFilter = ViewData["Filter"]?.ToString() ?? "all";
+}
+
+<div class="page-card">
+    <div class="page-card-body p-3">
+        <!-- FILTER BAR -->
+        <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
+            <button class="filter-btn" style="background:#28a745;color:white;border-color:#28a745;pointer-events:none;">
+                <i class="fas fa-file-signature me-1"></i>Signed Clearance
+            </button>
+            <div class="filter-bar">
+                <a href="?filter=all" class="filter-btn @(currentFilter == "all" ? "active-all" : "")">All</a>
+                <a href="?filter=approved" class="filter-btn @(currentFilter == "approved" ? "active" : "")">Approved</a>
+                <a href="?filter=rejected" class="filter-btn @(currentFilter == "rejected" ? "" : "")"
+                   style="@(currentFilter == "rejected" ? "background:#dc3545;color:white;border-color:#dc3545;" : "")">Rejected</a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>MIS CODE</th>
+                        <th>SUBJECT CODE</th>
+                        <th>DESCRIPTION</th>
+                        <th>REQUESTED</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+                <tbody id="signed-table-body">
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr data-status="@item.Status.ToLower()">
+                                <td><span class="mis-code-badge">@item.MisCode</span></td>
+                                <td style="font-weight:600;">@item.SubjectCode</td>
+                                <td>@item.Description</td>
+                                <td>
+                                    <div style="font-weight:600;">@item.StudentName</div>
+                                    <div style="font-size:11px;color:#888;">@item.StudentCourse</div>
+                                </td>
+                                <td>
+                                    @if (item.Status.ToLower() == "approved")
+                                    {
+                                        <span class="status-approved">Approved</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-declined">Declined</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <!-- SAMPLE DATA -->
+                        <tr data-status="approved">
+                            <td><span class="mis-code-badge">GT-58</span></td>
+                            <td style="font-weight:600;">P Elec 3</td>
+                            <td>Platform Technology</td>
+                            <td><div style="font-weight:600;">Althea Jean Barnes</div><div style="font-size:11px;color:#888;">BSIT-2A</div></td>
+                            <td><span class="status-approved">Approved</span></td>
+                        </tr>
+                        <tr data-status="approved">
+                            <td><span class="mis-code-badge">GT-54</span></td>
+                            <td style="font-weight:600;">AP 3</td>
+                            <td>Integrative Programming and Technologies 1</td>
+                            <td><div style="font-weight:600;">Mila Marie Villamor</div><div style="font-size:11px;color:#888;">BSIT-2A</div></td>
+                            <td><span class="status-approved">Approved</span></td>
+                        </tr>
+                        <tr data-status="approved">
+                            <td><span class="mis-code-badge">GT-55</span></td>
+                            <td style="font-weight:600;">PC 223</td>
+                            <td>ASP .NET</td>
+                            <td><div style="font-weight:600;">Melanie Dinglasa</div><div style="font-size:11px;color:#888;">BSIT-2A</div></td>
+                            <td><span class="status-approved">Approved</span></td>
+                        </tr>
+                        <tr data-status="declined">
+                            <td><span class="mis-code-badge">GT-54</span></td>
+                            <td style="font-weight:600;">PC 223</td>
+                            <td>Integrative Programming and Technologies 1</td>
+                            <td><div style="font-weight:600;">Stephany Camoro</div><div style="font-size:11px;color:#888;">BSIT-2A</div></td>
+                            <td><span class="status-declined">Declined</span></td>
+                        </tr>
+                        <tr data-status="approved">
+                            <td><span class="mis-code-badge">GT-54</span></td>
+                            <td style="font-weight:600;">P Elec 3</td>
+                            <td>Integrative Programming and Technologies 1</td>
+                            <td><div style="font-weight:600;">Janice Angel Chua</div><div style="font-size:11px;color:#888;">BSIT-2A</div></td>
+                            <td><span class="status-approved">Approved</span></td>
+                        </tr>
+                        <tr data-status="approved">
+                            <td><span class="mis-code-badge">GT-58</span></td>
+                            <td style="font-weight:600;">AP 3</td>
+                            <td>Platform Technology</td>
+                            <td><div style="font-weight:600;">Gabriel Tolomea</div><div style="font-size:11px;color:#888;">BSIT-2A</div></td>
+                            <td><span class="status-approved">Approved</span></td>
+                        </tr>
+                        <tr data-status="declined">
+                            <td><span class="mis-code-badge">GT-59</span></td>
+                            <td style="font-weight:600;">AP 3</td>
+                            <td>ASP .NET</td>
+                            <td><div style="font-weight:600;">Alex Belongilot</div><div style="font-size:11px;color:#888;">BSIT-2A</div></td>
+                            <td><span class="status-declined">Declined</span></td>
+                        </tr>
+                        <tr data-status="approved">
+                            <td><span class="mis-code-badge">GT-60</span></td>
+                            <td style="font-weight:600;">PC 223</td>
+                            <td>ASP .NET</td>
+                            <td><div style="font-weight:600;">Sheena Melgar</div><div style="font-size:11px;color:#888;">BSIT-2A</div></td>
+                            <td><span class="status-approved">Approved</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+// Client-side filter for sample data (server does it for real data)
+const params = new URLSearchParams(window.location.search);
+const filter = params.get('filter') || 'all';
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.remove('active', 'active-all');
+});
+
+document.querySelectorAll('#signed-table-body tr').forEach(row => {
+    const status = row.getAttribute('data-status');
+    if (filter === 'all') {
+        row.style.display = '';
+    } else if (filter === 'approved') {
+        row.style.display = status === 'approved' ? '' : 'none';
+    } else if (filter === 'rejected') {
+        row.style.display = status === 'declined' ? '' : 'none';
+    }
+});
+
+// Highlight active filter link
+document.querySelectorAll('a.filter-btn').forEach(a => {
+    const href = a.getAttribute('href');
+    if (href === '?filter=' + filter) {
+        if (filter === 'all') {
+            a.style.background = '#1a4731'; a.style.color = 'white'; a.style.borderColor = '#1a4731';
+        } else if (filter === 'approved') {
+            a.style.background = '#28a745'; a.style.color = 'white'; a.style.borderColor = '#28a745';
+        } else {
+            a.style.background = '#dc3545'; a.style.color = 'white'; a.style.borderColor = '#dc3545';
+        }
+    }
+});
+</script>
+}
